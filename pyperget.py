@@ -9,16 +9,18 @@ import wget
 from urllib.request import urlopen
 import urllib.request
 
+
 # Function to check url validity
 def check_validity(url):
     try:
         urllib.request.urlopen(url)
         print("Valid URL")
     except IOError:
-        print ("Invalid URL")
+        print("Invalid URL")
         sys.exit()
 
-# Download both txt and txt.gz files from pipermail webpage and return list of downloaded files
+
+# Download both txt and txt.gz files from pipermail webpage and return list
 def get_files(url):
     links = []
     html = urlopen(url).read()
@@ -31,11 +33,11 @@ def get_files(url):
         #Compose gunzip links
         if current_link.endswith('txt.gz'):
             files.append(current_link)
-            links.append(base.scheme + "://" + base.netloc + base.path  + current_link)
+            links.append(base.scheme + "://" + base.netloc + base.path + current_link)
         #Compose normal links
         elif current_link.endswith('txt'):
             files.append(current_link)
-            links.append(base.scheme + "://" + base.netloc + base.path  + current_link)
+            links.append(base.scheme + "://" + base.netloc + base.path + current_link)
     #Download prepared links
     for link in links:
         try:
@@ -47,6 +49,7 @@ def get_files(url):
     files.reverse()
 
     return(files)
+
 
 #Gunzip files if necessary and convert files to mbox
 def mbox_conversion(files, output):
@@ -76,12 +79,13 @@ def mbox_conversion(files, output):
         for line in res:
             outfile.write(line)
 
+
 # Define arguments for script
 def pass_args():
 
-    parser = argparse.ArgumentParser(description = "Download a pipermail archive and convert it to mbox")
-    parser.add_argument('-u', '--url', help = "Pipermail directory location. Example: http://hostname.tld/directory/. Don't forget the trailing /")
-    parser.add_argument('-o', '--output', help = "Output file name (without.mbox)", default ='output')
+    parser = argparse.ArgumentParser(description="Download a pipermail archive and convert it to mbox")
+    parser.add_argument('-u', '--url', help="Pipermail directory location. Example: http://hostname.tld/directory/. Don't forget the trailing /")
+    parser.add_argument('-o', '--output', help="Output file name (without.mbox)", default='output')
     args = parser.parse_args()
 
     return(args)
@@ -92,5 +96,6 @@ def main():
     args = pass_args()
     check_validity(args.url)
     mbox_conversion(get_files(args.url), args.output)
+
 
 main()
